@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Powerplay</string>
     <string name="app_power_play_assignment_application">Power Play Assignment Application</string>
+    <string name="app_camera">Camera</string>
+    <string name="app_gallery">Gallery</string>
+    <string name="app_all_permissions_are_necessary">All permissions are necessary</string>
+    <string name="app_one_or_more_permissions_denied">Cannot proceed as one or more permission(s) is denied. Go app settings for allowing permission(s).</string>
 </resources>
