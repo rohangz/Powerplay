@@ -137,7 +137,7 @@ public class GestureImageViewTouchListener implements OnTouchListener {
         tapDetector = new GestureDetector(image.getContext(), new SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                startZoom(e);
+//                startZoom(e);
                 return true;
             }
 

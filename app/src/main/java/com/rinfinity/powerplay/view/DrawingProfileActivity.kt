@@ -1,6 +1,7 @@
 package com.rinfinity.powerplay.view
 
 import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -46,6 +47,35 @@ class DrawingProfileActivity : AppCompatActivity() {
         mBinding.appBack.setOnClickListener {
             setResult(Activity.RESULT_CANCELED, null)
             finish()
+        }
+        mBinding.appButtonSave.setOnClickListener {
+            Intent().apply {
+                if (mViewModel.drawingItem.value != null) {
+                    setResult(Activity.RESULT_OK, this)
+                    putExtra(IntentParmas.PARAM_IMAGE_ID, mViewModel.drawingItem.value!!.id)
+                    putExtra(
+                        IntentParmas.PARAM_IMAGE_NAME,
+                        mViewModel.drawingItem.value!!.imageName
+                    )
+                    putExtra(IntentParmas.PARAM_IMAGE_URI, mViewModel.drawingItem.value!!.imageUri)
+                    putExtra(
+                        IntentParmas.PARAM_IMAGE_CREATION_TIME,
+                        mViewModel.drawingItem.value!!.imageCreationTime
+                    )
+                    putExtra(
+                        IntentParmas.PARAM_MARKER_COUNT,
+                        mViewModel.drawingItem.value!!.imageMarkerCount
+                    )
+                    putExtra(
+                        IntentParmas.PARAM_POSITION,
+                        intent.getIntExtra(IntentParmas.PARAM_POSITION, 0)
+                    )
+                    finish()
+                } else {
+                    setResult(Activity.RESULT_CANCELED, null)
+                    finish()
+                }
+            }
         }
     }
 

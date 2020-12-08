@@ -42,7 +42,7 @@ class DrawingListAdapter(
 
     fun updateItem(item: DrawingItem, position: Int) {
         list[position] = item
-        notifyItemInserted(position)
+        notifyItemChanged(position)
     }
 
     inner class DrawingListItemViewHolder(private val mBinding: AppDrawingItemBinding) :
