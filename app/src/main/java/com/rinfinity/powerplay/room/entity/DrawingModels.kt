@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "drawings")
 data class DrawingItem(
-    @PrimaryKey val id: Long,
-    @ColumnInfo(name = "imageUri") val imageUri: String,
-    @ColumnInfo(name = "imageName") val imageName: String,
-    @ColumnInfo(name = "imageCreationTime") val imageCreationTime: String,
-    @ColumnInfo(name = "imageMarkerCount") val imageMarkerCount: Int
+    @PrimaryKey var id: Long,
+    @ColumnInfo(name = "imageUri") var imageUri: String,
+    @ColumnInfo(name = "imageName") var imageName: String,
+    @ColumnInfo(name = "imageCreationTime") var imageCreationTime: String,
+    @ColumnInfo(name = "imageMarkerCount") var imageMarkerCount: Int
 )

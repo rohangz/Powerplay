@@ -51,6 +51,12 @@ class MainActivityViewModel(app: Application, repo: IMainActivityRepo) : Android
         }
     }
 
+    fun updateItem(item: DrawingItem) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getApplication<PowerPlayApplication>().drawingDatabase.getDrawingDAO().updateItem(item)
+        }
+    }
+
 
     class MainActivityViewModelFactory(
         private val app: Application,

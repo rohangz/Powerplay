@@ -1,9 +1,6 @@
 package com.rinfinity.powerplay.room.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.rinfinity.powerplay.room.entity.DrawingItem
 import kotlinx.coroutines.flow.Flow
 
@@ -18,5 +15,8 @@ interface DrawingDAO  {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addList(items: List<DrawingItem>)
+
+    @Update(entity = DrawingItem::class, onConflict = OnConflictStrategy.REPLACE)
+    fun updateItem(item: DrawingItem)
 
 }

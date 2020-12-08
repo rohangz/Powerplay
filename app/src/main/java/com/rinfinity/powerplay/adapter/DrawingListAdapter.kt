@@ -10,11 +10,11 @@ import com.rinfinity.powerplay.room.entity.DrawingItem
 
 class DrawingListAdapter(
     private val list: ArrayList<DrawingItem>,
-    private val mContext: Context
+    private val mListener: IDrawingListAdapterListener
 ) :
     RecyclerView.Adapter<BaseViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
-        val binding = AppDrawingItemBinding.inflate(LayoutInflater.from(mContext), parent, false)
+        val binding = AppDrawingItemBinding.inflate(LayoutInflater.from(mListener.context), parent, false)
         return DrawingListItemViewHolder(binding)
     }
 
@@ -40,13 +40,27 @@ class DrawingListAdapter(
         notifyItemInserted(position)
     }
 
+    fun updateItem(item: DrawingItem, position: Int) {
+        list[position] = item
+        notifyItemInserted(position)
+    }
+
     inner class DrawingListItemViewHolder(private val mBinding: AppDrawingItemBinding) :
         BaseViewHolder(mBinding.root) {
         override fun bindData(position: Int, item: Any) {
             (item as? DrawingItem)?.let {
                 mBinding.mDataModel = it
+                mBinding.root.setOnClickListener {
+                    mListener.onDrawingListItemClick(item, position)
+                }
             }
         }
+    }
+
+
+    interface IDrawingListAdapterListener {
+        fun onDrawingListItemClick(item: DrawingItem, position: Int)
+        val context: Context
     }
 
 }

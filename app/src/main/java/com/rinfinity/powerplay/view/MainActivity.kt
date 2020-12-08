@@ -1,6 +1,7 @@
 package com.rinfinity.powerplay.view
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -27,15 +28,20 @@ private const val CONST_RQST_CAMERA_PERMISSIONS = 0
 private const val CONST_CAMERA_PICK_IMAGE = 1
 private const val CONST_GALLERY_PICK_IMAGE = 2
 private const val CONST_SAVE_DRAWING_ACTIVITY = 3
+private const val CONST_DRAWING_PROFILE_ACTIVITY = 4
 
 class MainActivity : AppCompatActivity(),
-    AddDrawingBottomSheet.IAddDrawingBottomSheetClickListener {
+    AddDrawingBottomSheet.IAddDrawingBottomSheetClickListener,
+    DrawingListAdapter.IDrawingListAdapterListener {
+
     private val mAddDrawingBottomSheetTag = "AddDrawingBottomSheet"
     private lateinit var mViewModel: MainActivityViewModel
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mAdapter: DrawingListAdapter
     private var mSelectedImageURI: Uri? = null
 
+    override val context: Context
+        get() = this
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -43,6 +49,7 @@ class MainActivity : AppCompatActivity(),
             CONST_CAMERA_PICK_IMAGE -> onCameraResult(resultCode, data)
             CONST_GALLERY_PICK_IMAGE -> onGalleryResult(resultCode, data)
             CONST_SAVE_DRAWING_ACTIVITY -> onSaveDrawingResult(resultCode, data)
+            CONST_DRAWING_PROFILE_ACTIVITY -> onDrawingProfileResult(resultCode, data)
         }
     }
 
@@ -75,6 +82,24 @@ class MainActivity : AppCompatActivity(),
                     imageMarkerCount = 0
                 )
             )
+        }
+    }
+
+    private fun onDrawingProfileResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            data.apply {
+                val updatedItem = DrawingItem(
+                    id = getLongExtra(IntentParmas.PARAM_IMAGE_ID, 0),
+                    imageName = getStringExtra(IntentParmas.PARAM_IMAGE_NAME) ?: "",
+                    imageUri = getStringExtra(IntentParmas.PARAM_IMAGE_URI) ?: "",
+                    imageCreationTime = getStringExtra(IntentParmas.PARAM_IMAGE_CREATION_TIME)
+                        ?: "",
+                    imageMarkerCount = getIntExtra(IntentParmas.PARAM_MARKER_COUNT, 0)
+                )
+                val position = getIntExtra(IntentParmas.PARAM_POSITION, 0)
+                mViewModel.updateItem(updatedItem)
+                mAdapter.updateItem(updatedItem, position)
+            }
         }
     }
 
@@ -194,4 +219,18 @@ class MainActivity : AppCompatActivity(),
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         startActivityForResult(intent, CONST_GALLERY_PICK_IMAGE)
     }
+
+    override fun onDrawingListItemClick(item: DrawingItem, position: Int) {
+        Intent(this, DrawingProfileActivity::class.java).apply {
+            putExtra(IntentParmas.PARAM_IMAGE_ID, item.id)
+            putExtra(IntentParmas.PARAM_IMAGE_NAME, item.imageName)
+            putExtra(IntentParmas.PARAM_IMAGE_URI, item.imageUri)
+            putExtra(IntentParmas.PARAM_IMAGE_CREATION_TIME, item.imageCreationTime)
+            putExtra(IntentParmas.PARAM_MARKER_COUNT, item.imageMarkerCount)
+            putExtra(IntentParmas.PARAM_POSITION, position)
+            startActivityForResult(this, CONST_DRAWING_PROFILE_ACTIVITY)
+        }
+
+    }
+
 }

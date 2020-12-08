@@ -14,8 +14,10 @@ interface IntentParmas {
     companion object {
         const val SAVE_DRAWING_RESULT = "saveDrawingResult"
         const val PARAM_IMAGE_URI = "imageUri"
+        const val PARAM_MARKER_COUNT = "imageMarkerCount"
         const val PARAM_IMAGE_NAME = "imageName"
         const val PARAM_IMAGE_ID = "imageId"
         const val PARAM_IMAGE_CREATION_TIME = "imageCreationTime"
+        const val PARAM_POSITION = "position"
     }
 }
