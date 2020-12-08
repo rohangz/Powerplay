@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.rinfinity.powerplay.R
 import com.rinfinity.powerplay.adapter.DrawingListAdapter
 import com.rinfinity.powerplay.databinding.ActivityMainBinding
-import com.rinfinity.powerplay.model.DrawingListItemModel
+import com.rinfinity.powerplay.room.entity.DrawingItem
 import com.rinfinity.powerplay.repo.DrawingRepo
 import com.rinfinity.powerplay.utils.*
 import com.rinfinity.powerplay.viewmodel.MainActivityViewModel
@@ -67,9 +67,9 @@ class MainActivity : AppCompatActivity(),
             val imageId = data.getLongExtra(IntentParmas.PARAM_IMAGE_ID, 0L)
             val imageName = data.getStringExtra(IntentParmas.PARAM_IMAGE_NAME) ?: ""
             mViewModel.addDrawingItem(
-                DrawingListItemModel(
+                DrawingItem(
                     id = imageId,
-                    imageUri = resultUri,
+                    imageUri = resultUri.toString(),
                     imageName = imageName,
                     imageCreationTime = imageCreationTime,
                     imageMarkerCount = 0
@@ -111,16 +111,25 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initUI()
+        setOnClickListeners()
+        initObservers()
+        initAdapter(ArrayList())
+        fetchInitialList()
+    }
+
+    private fun fetchInitialList() {
+        mViewModel.fetchInitialDrawingList()
+    }
+
+    private fun initUI() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         mViewModel = ViewModelProvider(
             this,
             MainActivityViewModel.MainActivityViewModelFactory(application, DrawingRepo())
         ).get(MainActivityViewModel::class.java)
-        setOnClickListeners()
-        initObservers()
-        initAdapter()
+        mBinding.mViewModel = mViewModel
     }
-
 
     private fun setOnClickListeners() {
         mBinding.appFab.setOnClickListener {
@@ -132,6 +141,10 @@ class MainActivity : AppCompatActivity(),
         mViewModel.addedDrawingItem.observe(this, Observer {
             mAdapter.addItemToList(it)
         })
+        mViewModel.initialDrawingList.observe(this, Observer {
+            mAdapter.replaceList(it)
+            mViewModel.initialDrawingList.removeObservers(this)
+        })
     }
 
     private fun startSaveDrawing() {
@@ -142,8 +155,8 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-    private fun initAdapter() {
-        mAdapter = DrawingListAdapter(ArrayList(), this)
+    private fun initAdapter(arrayList: ArrayList<DrawingItem>) {
+        mAdapter = DrawingListAdapter(arrayList, this)
         mBinding.appList.layoutManager = LinearLayoutManager(this)
         mBinding.appList.adapter = mAdapter
     }
@@ -165,7 +178,7 @@ class MainActivity : AppCompatActivity(),
         val photoFile = createUniqueFile(this, Extensions.PNG)
         photoFile?.let {
             mSelectedImageURI =
-                FileProvider.getUriForFile(this, "com.rinfinity.powerplay.provider", photoFile)
+                FileProvider.getUriForFile(this, CONST_APP_PROVIDER_AUTHORITY, photoFile)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mSelectedImageURI)
@@ -175,8 +188,10 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onGalleryClick() {
-        val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-        contentSelectionIntent.type = "image/*"
-        startActivityForResult(contentSelectionIntent, CONST_GALLERY_PICK_IMAGE)
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.type = "image/*"
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        startActivityForResult(intent, CONST_GALLERY_PICK_IMAGE)
     }
 }

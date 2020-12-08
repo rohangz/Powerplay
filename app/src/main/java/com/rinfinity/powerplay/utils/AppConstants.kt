@@ -2,7 +2,7 @@ package com.rinfinity.powerplay.utils
 
 const val CONST_APP_BASE_URL = "https://www.powerplay.com"
 const val CONST_APP_DATE_FORMAT = "dd-MM-yyyy HH:mm:ss"
-
+const val CONST_APP_PROVIDER_AUTHORITY = "com.rinfinity.powerplay.provider"
 
 interface Extensions {
     companion object {
