@@ -5,4 +5,7 @@
     <string name="app_gallery">Gallery</string>
     <string name="app_all_permissions_are_necessary">All permissions are necessary</string>
     <string name="app_one_or_more_permissions_denied">Cannot proceed as one or more permission(s) is denied. Go app settings for allowing permission(s).</string>
+    <string name="app_enter_drawing_name">Enter Drawing Name</string>
+    <string name="app_save">Save</string>
+    <string name="app_enter_valid_file_name">Please enter a valid filename</string>
 </resources>

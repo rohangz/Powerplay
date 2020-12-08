@@ -2,21 +2,24 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rinfinity.powerplay">
 
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".application.PowerPlayApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:name=".application.PowerPlayApplication"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Powerplay">
-
-
-        <activity android:name=".view.MainActivity">
+        <activity android:name=".view.SaveDrawingActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+            />
+        <activity android:name=".view.MainActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

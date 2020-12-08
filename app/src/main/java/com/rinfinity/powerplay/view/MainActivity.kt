@@ -1,6 +1,5 @@
 package com.rinfinity.powerplay.view
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,23 +13,27 @@ import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.rinfinity.powerplay.R
+import com.rinfinity.powerplay.adapter.DrawingListAdapter
 import com.rinfinity.powerplay.databinding.ActivityMainBinding
+import com.rinfinity.powerplay.model.DrawingListItemModel
 import com.rinfinity.powerplay.repo.DrawingRepo
 import com.rinfinity.powerplay.utils.*
 import com.rinfinity.powerplay.viewmodel.MainActivityViewModel
-import com.squareup.picasso.Picasso
 
 
 private const val CONST_RQST_CAMERA_PERMISSIONS = 0
 private const val CONST_CAMERA_PICK_IMAGE = 1
 private const val CONST_GALLERY_PICK_IMAGE = 2
+private const val CONST_SAVE_DRAWING_ACTIVITY = 3
 
 class MainActivity : AppCompatActivity(),
     AddDrawingBottomSheet.IAddDrawingBottomSheetClickListener {
     private val mAddDrawingBottomSheetTag = "AddDrawingBottomSheet"
     private lateinit var mViewModel: MainActivityViewModel
     private lateinit var mBinding: ActivityMainBinding
+    private lateinit var mAdapter: DrawingListAdapter
     private var mSelectedImageURI: Uri? = null
 
 
@@ -39,21 +42,41 @@ class MainActivity : AppCompatActivity(),
         when (requestCode) {
             CONST_CAMERA_PICK_IMAGE -> onCameraResult(resultCode, data)
             CONST_GALLERY_PICK_IMAGE -> onGalleryResult(resultCode, data)
+            CONST_SAVE_DRAWING_ACTIVITY -> onSaveDrawingResult(resultCode, data)
         }
     }
 
     private fun onCameraResult(resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && mSelectedImageURI!=null) {
-            Picasso.get().load(mSelectedImageURI!!).fit().into(mBinding.appTestImage)
+        if (resultCode == Activity.RESULT_OK && mSelectedImageURI != null) {
+            startSaveDrawing()
         }
     }
 
     private fun onGalleryResult(resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && data != null && data.data!=null) {
-            Picasso.get().load(data.data!!).fit().into(mBinding.appTestImage)
+        if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+            mSelectedImageURI = data.data
+            startSaveDrawing()
         }
     }
 
+    private fun onSaveDrawingResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+            val resultUri = data.data!!
+            val imageCreationTime =
+                data.getStringExtra(IntentParmas.PARAM_IMAGE_CREATION_TIME) ?: ""
+            val imageId = data.getLongExtra(IntentParmas.PARAM_IMAGE_ID, 0L)
+            val imageName = data.getStringExtra(IntentParmas.PARAM_IMAGE_NAME) ?: ""
+            mViewModel.addDrawingItem(
+                DrawingListItemModel(
+                    id = imageId,
+                    imageUri = resultUri,
+                    imageName = imageName,
+                    imageCreationTime = imageCreationTime,
+                    imageMarkerCount = 0
+                )
+            )
+        }
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -95,10 +118,10 @@ class MainActivity : AppCompatActivity(),
         ).get(MainActivityViewModel::class.java)
         setOnClickListeners()
         initObservers()
+        initAdapter()
     }
 
 
-    @SuppressLint("SimpleDateFormat")
     private fun setOnClickListeners() {
         mBinding.appFab.setOnClickListener {
             AddDrawingBottomSheet().show(supportFragmentManager, mAddDrawingBottomSheetTag)
@@ -106,9 +129,23 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun initObservers() {
-        mViewModel.drawingModelList.observe(this, Observer {
-
+        mViewModel.addedDrawingItem.observe(this, Observer {
+            mAdapter.addItemToList(it)
         })
+    }
+
+    private fun startSaveDrawing() {
+        Intent(this, SaveDrawingActivity::class.java).apply {
+            data = mSelectedImageURI
+            startActivityForResult(this, CONST_SAVE_DRAWING_ACTIVITY)
+        }
+
+    }
+
+    private fun initAdapter() {
+        mAdapter = DrawingListAdapter(ArrayList(), this)
+        mBinding.appList.layoutManager = LinearLayoutManager(this)
+        mBinding.appList.adapter = mAdapter
     }
 
     override fun onCameraClick() {

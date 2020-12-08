@@ -74,19 +74,11 @@
             app:icon="@drawable/app_ic_add"
             app:iconTint="@color/white" />
 
-        <ImageView
-            android:id="@+id/app_test_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            />
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/app_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             />
 

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+
+    <data>
+
+        <variable
+            name="mDataModel"
+            type="com.rinfinity.powerplay.model.DrawingListItemModel" />
+
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        >
+
+
+        <ImageView
+            android:id="@+id/app_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="4dp"
+            loadThumbnail="@{mDataModel.imageUri}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/app_ic_camera"
+
+            />
+
+        <TextView
+            android:id="@+id/app_file_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="@{mDataModel.imageName}"
+            app:layout_constraintTop_toTopOf="@id/app_icon"
+            app:layout_constraintStart_toEndOf="@id/app_icon"
+            app:layout_constraintEnd_toStartOf="@id/app_marker_count"
+            app:layout_constraintBottom_toTopOf="@id/app_file_creaton_time"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="File name"
+            />
+
+
+        <TextView
+            android:id="@+id/app_file_creaton_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/black"
+            android:text="@{mDataModel.imageCreationTime}"
+            app:layout_constraintTop_toBottomOf="@id/app_file_name"
+            app:layout_constraintStart_toEndOf="@id/app_icon"
+            app:layout_constraintEnd_toStartOf="@id/app_marker_count"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="12:00 on Wenesday"
+            />
+
+
+
+        <TextView
+            android:id="@+id/app_marker_count"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:text="@{String.valueOf(mDataModel.imageMarkerCount)}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="12"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

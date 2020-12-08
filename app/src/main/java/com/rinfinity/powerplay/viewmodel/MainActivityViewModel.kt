@@ -8,10 +8,14 @@ import java.lang.Exception
 
 class MainActivityViewModel(app: Application, repo: IMainActivityRepo) : AndroidViewModel(app) {
 
-    private val mDrawingModelList = MutableLiveData<List<DrawingListItemModel>>()
-    val drawingModelList: LiveData<List<DrawingListItemModel>>
-        get() = mDrawingModelList
+    private val mAddedDrawingItem = MutableLiveData<DrawingListItemModel>()
+    val addedDrawingItem: LiveData<DrawingListItemModel>
+        get() = mAddedDrawingItem
 
+
+    fun addDrawingItem(item: DrawingListItemModel) {
+        mAddedDrawingItem.value = item
+    }
 
 
     class MainActivityViewModelFactory(

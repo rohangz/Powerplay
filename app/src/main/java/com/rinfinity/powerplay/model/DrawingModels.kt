@@ -1,7 +1,12 @@
 package com.rinfinity.powerplay.model
 
+import android.net.Uri
+import java.io.Serializable
+
 data class DrawingListItemModel(
-    val id: Int,
-    val imagePath: String,
-    val imageName: String
+    val id: Long,
+    val imageUri: Uri,
+    val imageName: String,
+    val imageCreationTime: String,
+    val imageMarkerCount: Int
 )
